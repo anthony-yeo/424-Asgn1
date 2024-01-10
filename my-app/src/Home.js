@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useAuth } from "./context/AuthProvider";
+import axios from 'axios';
 
 export const Home = () => {
     const { value } = useAuth();
@@ -11,13 +12,24 @@ export const Home = () => {
         { username: 'user2', password: 'pass2'},
     ]
 
-    const handleSignIn = () => {
-        const isValidUser = logins.some(creds => creds.username === username && creds.password === password);
+    const handleSignIn = async() => {
+        try {
+            const response = await axios.post('http://localhost:8000/login',
+                {user: username, pass: password});
+            
 
-        if (isValidUser){
-            value.onLogin();
-        } else {
-            alert('Invalid login');
+            console.log(response.status);
+            if (response.status === 200){
+                value.onLogin();
+            } else {
+                alert('Invalid Login');
+            }
+        } catch (error) {
+            if (error.response && error.response.status === 401){
+                alert('Invalid Login');
+            } else {
+                alert('Something went wrong');
+            }
         }
     }
 
