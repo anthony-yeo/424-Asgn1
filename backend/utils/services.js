@@ -1,18 +1,31 @@
-async function fakeAuth(){
-    try{
-        new Promise ((resolve) => {
-            setTimeout(() => resolve('2342f2f1d131rf12'), 250);
-        });
-
-        return '2342f2f1d131rf12';
-    } catch {
+function validPass(password){
+    if(containsCap(password) && 
+        containsLow(password) &&
+        containsNum(password) && 
+        containsSym(password) &&
+        (password.length > 8)){
+        return true;
+    } else {
         return undefined;
     }
 }
 
-exports.fakeAuth = fakeAuth;
-// async function fakeAuth () []
-//   new Promise((resolve) => {
-//     setTimeout(() => resolve('2342f2f1d131rf12'), 250);
-//  });
+function containsCap(str){
+    return /[A-Z]/.test(str);
+}
+
+function containsLow(str){
+    return /[a-z]/.test(str);
+}
+
+function containsNum(str){
+    return /\d/.test(str);
+}
+
+function containsSym(str){
+    return /[!@#$%^&*(),.?":{}|<>]/.test(str); 
+}
+
+exports.validPass = validPass;
+
 
