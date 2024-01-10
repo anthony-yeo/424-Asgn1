@@ -1,8 +1,12 @@
 import { useState } from "react";
 import { useAuth } from "./context/AuthProvider";
+import { useNavigate } from "react-router-dom";
 import axios from 'axios';
 
 export const Home = () => {
+
+    const navigate = useNavigate();
+
     const { value } = useAuth();
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
@@ -11,6 +15,10 @@ export const Home = () => {
     //     { username: 'user1', password: 'pass1'},
     //     { username: 'user2', password: 'pass2'},
     // ]
+
+    const handleNewAccount = () => {
+        navigate('/NewAccount');
+    }
 
     const handleSignIn = async() => {
         try {
@@ -51,7 +59,7 @@ export const Home = () => {
                 Sign In
             </button>
 
-            <button type="button" onClick={handleSignIn} style={{ marginLeft: '10px' }}>
+            <button type="button" onClick={handleNewAccount} style={{ marginLeft: '10px' }}>
                 Create New Account
             </button>
 
