@@ -10,6 +10,7 @@ export const Home = () => {
     const { value } = useAuth();
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
+    const [showPassword, setShowPassword] = useState('');
 
     const handleNewAccount = () => {
         navigate('/NewAccount');
@@ -69,7 +70,17 @@ export const Home = () => {
 
             <div>
                 <label htmlFor="password">Password </label>
-                <input type="text" id="password" value={password} onChange={(e) => setPassword(e.target.value)}/>
+                <input
+                    type={showPassword ? "text" : "password"}
+                    id="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                />
+                <button
+                    onClick={() => setShowPassword(prevShowPassword => !prevShowPassword)}
+                    type="button">
+                    {showPassword ? "Hide" : "Show"}
+                </button>
             </div>
 
             <button type="button" onClick={handleSignIn}>
@@ -83,4 +94,4 @@ export const Home = () => {
         </>
 
     );
-  };
+};
