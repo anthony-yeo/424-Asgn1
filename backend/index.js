@@ -1,64 +1,161 @@
+const https = require("https");
+const fs = require("fs");
+const jwt = require('jsonwebtoken');
+require('dotenv').config();
+
 const express = require('express');
 const cors = require('cors');
+const cookieParser = require('cookie-parser');
 
 const app = express();
 const port = 8000;
 
 const { validPass } = require('./utils/services');
+const userServices = require('./models/user-services');
+const User = require('./models/user');
 
-app.use(cors());
+const TOKEN_SECRET = process.env.JWT_SECRET;
+
+
+app.use(cors({
+    origin: 'https://localhost:3000',
+    credentials: true,
+}));
 app.use(express.json());
+app.use(cookieParser());
 
-const logins = [
-    { username: 'user1', password: 'pass1'},
-]
+https
+  .createServer(
+		// Provide the private and public key to the server by reading each
+		// file's content with the readFileSync() method.
+    {
+      key: fs.readFileSync("key.pem"),
+      cert: fs.readFileSync("cert.pem"),
+    },
+    app
+  )
+  .listen(port, () => {
+    console.log(`Server is runing at https://localhost:8000`);
+  });
+
+// const logins = [
+//     { username: 'user1', password: 'pass1'},
+// ]
+
+
+// When do we authenticate the token
+// When the token expires how do we renew it and store it in the database
+function authenticateToken(req, res, next) {
+    const token = req.cookies.token;
+
+    //console.log(token);
+
+    if (token == null) return res.sendStatus(401);
+
+    jwt.verify(token, TOKEN_SECRET, (err, user) => {
+        // console.log(err);
+
+        if (err) return res.sendStatus(403);
+
+        req.user = user; // Set the user in the request
+
+        next(); // Call the next middleware/route handler
+    });
+}
+
 
 app.get('/', (req, res) => {
     res.send('Hello World!');
 });
 
-app.post('/login', (req, res) => {
-    user = req.body.user;
-    pass = req.body.pass;
+app.post('/login', async (req, res) => {
 
-    isValidUser = logins.some(creds => creds.username === user && creds.password === pass);
-    if (isValidUser){
-        setTimeout(() => {
-            res.status(200).json({token: '2342f2f1d131rf12'});
-        }, 250);
-    } else {
-        res.status(401).send("Invalid Login");
+    try{
+        const result = await userServices.validateUser(req.body);
+
+        if(result === undefined){
+            return res.sendStatus(401);
+        }
+
+        console.log(result.token);
+
+
+        res.cookie('token', result.token, {httpOnly: true, secure: true });
+        res.status(200).json({message: 'Login successful'});
+    } catch (error) {
+        console.log(error);
+        res.status(500).send("An error occured in the server");
     }
+    
+});
+
+app.get('/checkauth', authenticateToken, (req, res) => {
+    // If this point is reached, token is authenticated
+    return res.status(200).send("Authenticated");
 });
 
 app.post('/new', async (req, res) => {
-
+    console.log("HERE");
     const { user, pass1, pass2 } = req.body;
+    // const user_obj = {user: user, password: pass1};
 
-    if (await validPass(pass1)){
-        if (pass1 === pass2){
-            const exists = logins.some(login => login.username === user);
-            console.log(exists);
-            if(!exists){
-                logins.push({username: user, password: pass1});
-                res.sendStatus(200);
+    try{
+
+        // Password is not strong enough 
+        if (await validPass(pass1)){
+
+            // Passwords Don't Match
+            if  (pass1 === pass2){
+
+                const token = userServices.generateAccessToken({ username: user });
+
+
+                const user_obj = {user: user, password: pass1, token: token};
+                console.log(user_obj);
+
+                const result = await userServices.addUser(user_obj);
+                console.log(result);
+                
+                // User Already Exists
+                if (result === false){
+                    res.sendStatus(409);
+                } else {
+                    res.cookie('token', token, { httpOnly: true, secure: true});
+                    res.sendStatus(200);
+                }
+
             } else {
-                res.sendStatus(409);
+                console.log("not valid");
+                res.sendStatus(422);
             }
         } else {
-            res.sendStatus(422);
+            console.log("not valid");
+            res.sendStatus(400);
         }
-    } else {
-        res.sendStatus(400);
-    }    
-});
-
-app.get('/users', (req, res) => {
-    const users = logins.map(user => user.username);
-    res.json(users);
+    } catch (error) {
+        
+        console.log(error);
+        res.sendStatus(500);
+    }
 });
 
 
-app.listen(port, () => {
-    console.log(`Example app listening at http://localhost:${port}`);
-});   
+app.post('/logout', (req, res) => {
+    try{
+        res.clearCookie('token');
+        return res.status(200).send('Succesful Log Out');
+    } catch (error) {
+        console.log(error);
+        return res.status(500).send('Internal server error');
+    }
+});
+// app.get('/users', (req, res) => {
+//     const users = logins.map(user => user.username);
+//     res.json(users);
+// });
+
+
+
+// app.listen(port, () => {
+//     console.log(`Example app listening at http://localhost:${port}`);
+// });   

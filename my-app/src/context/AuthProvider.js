@@ -11,8 +11,7 @@ export const AuthProvider = ({ children }) => {
 
 
     const handleLogin = async () => {
-        const token = await fakeAuth();
-        setToken(token);
+        setToken(true);
         navigate("/landing");
     };
 

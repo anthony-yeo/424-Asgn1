@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useAuth } from "./context/AuthProvider";
 import { useNavigate } from "react-router-dom";
 import axios from 'axios';
@@ -11,22 +11,39 @@ export const Home = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
 
-    // const logins = [
-    //     { username: 'user1', password: 'pass1'},
-    //     { username: 'user2', password: 'pass2'},
-    // ]
-
     const handleNewAccount = () => {
         navigate('/NewAccount');
     }
 
+    const checkAuth = async() => {
+        try {
+            const response = await axios.get('https://localhost:8000/checkauth', {
+                withCredentials: true
+            });
+
+            console.log(response);
+
+            if (response.status === 200){
+                value.onLogin();
+            }
+        } catch (error) {
+            console.log("User is not authenticated");
+        }
+    }
+
+    useEffect(() => {
+        checkAuth();
+    }, []);
+
     const handleSignIn = async() => {
         try {
-            const response = await axios.post('http://localhost:8000/login',
-                {user: username, pass: password});
-            
-
-            console.log(response.status);
+            const response = await axios.post('https://localhost:8000/login',{
+                user: username, 
+                pass: password
+            }, {
+                withCredentials: true
+            });
+        
             if (response.status === 200){
                 value.onLogin();
             } else {

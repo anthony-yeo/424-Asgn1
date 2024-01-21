@@ -1,11 +1,14 @@
 import { useAuth } from "./context/AuthProvider";
+import axios from 'axios';
 
 export const Landing = () => {
-  const { value } = useAuth();
+
   return (
     <>
       <h2>Landing (Protected)</h2>
-     <div> Authenticated as {value.token}</div>
+
+      {/* REMOVED FOR SECURITY PURPOSES? */}
+      {/* <div> Authenticated as {value.token}</div> */}
     </>
   );
 };

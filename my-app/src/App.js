@@ -8,6 +8,8 @@ import { NewAccount } from "./NewAccount";
 import { ProtectedRoute } from "./utils/ProtectedRoute";
 import { AuthProvider, useAuth } from "./context/AuthProvider";
 
+import axios from 'axios';
+
 
 
 export const AuthContext = React.createContext(null);  // we will use this in other components
@@ -34,6 +36,15 @@ const App = () => {
 
 const Navigation = () => {
     const { value } = useAuth();
+
+    const handleLogout = async () => {
+      try {
+        await axios.post('https://localhost:8000/logout', {}, { withCredentials: true});
+        value.onLogout();
+      } catch (error) {
+        console.log('Log out failed', error);
+      }
+    }
     return (
       <nav>
 
@@ -41,7 +52,7 @@ const Navigation = () => {
         <NavLink to="/landing">Landing</NavLink>
 
         {value.token && (
-          <button type="button" onClick={value.onLogout}>
+          <button type="button" onClick={handleLogout}>
             Sign Out
           </button>
         )}

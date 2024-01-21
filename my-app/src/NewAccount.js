@@ -14,13 +14,13 @@ export const NewAccount = () => {
 
     const handleNewAccount = async() => {
         try {
-            const response = await axios.post('http://localhost:8000/new',
+            const response = await axios.post('https://localhost:8000/new',
                 {
                     user: username, 
                     pass1: password1,
                     pass2: password2
                 });
-                
+
             console.log(response.status);
             if(response.status === 200){
                 alert('Account Created');
@@ -33,7 +33,7 @@ export const NewAccount = () => {
                 alert("Password not strong enough");
             } else if (error.response && error.response.status === 422){
                 alert("Passwords don't match");
-            } else if (error.response && error.response.status == 409) {
+            } else if (error.response && error.response.status === 409) {
                 alert("Username in use")
             }else {
                 alert("Something went wrong");
