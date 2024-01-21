@@ -1,6 +1,7 @@
 const https = require("https");
 const fs = require("fs");
 const jwt = require('jsonwebtoken');
+const bcrypt = require('bcrypt');
 require('dotenv').config();
 
 const express = require('express');
@@ -15,6 +16,7 @@ const userServices = require('./models/user-services');
 const User = require('./models/user');
 
 const TOKEN_SECRET = process.env.JWT_SECRET;
+const saltRounds = 10;
 
 
 app.use(cors({
@@ -95,8 +97,7 @@ app.get('/checkauth', authenticateToken, (req, res) => {
 });
 
 app.post('/new', async (req, res) => {
-    console.log("HERE");
-    const { user, pass1, pass2 } = req.body;
+    const { user, pass1, pass2, phone, email } = req.body;
     // const user_obj = {user: user, password: pass1};
 
     try{
@@ -109,9 +110,8 @@ app.post('/new', async (req, res) => {
 
                 const token = userServices.generateAccessToken({ username: user });
 
-
-                const user_obj = {user: user, password: pass1, token: token};
-                console.log(user_obj);
+                const hashedPassword = await bcrypt.hash(pass1, saltRounds);
+                const user_obj = {user: user, password: hashedPassword, phone: phone, email: email, token: token};
 
                 const result = await userServices.addUser(user_obj);
                 console.log(result);
@@ -149,10 +149,12 @@ app.post('/logout', (req, res) => {
         return res.status(500).send('Internal server error');
     }
 });
-// app.get('/users', (req, res) => {
-//     const users = logins.map(user => user.username);
-//     res.json(users);
-// });
+
+app.get('/users', async (req, res) => {
+    const users = await userServices.getAllUserDetails();
+    // console.log(users);
+    res.json(users);
+});
 
 
 

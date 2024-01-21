@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const userModel = require('./user');
 const jwt = require('jsonwebtoken');
+const bcrypt = require('bcrypt');
 require('dotenv').config();
 
 
@@ -18,21 +19,17 @@ mongoose
   })
   .catch((error) => console.log(error));
 
-async function getUsers(name, job) {
-  let result;
-  if (name === undefined && job === undefined) {
-    result = await userModel.find();
-  } else if (name && !job) {
-    result = await findUserByName(name);
-  } else if (job && !name) {
-    result = await findUserByJob(job);
-  }
-  return result;
-}
 
-async function findUserById(id) {
-  try {
-    return await userModel.findById(id);
+async function getAllUserDetails(){
+  try{
+    const users = await userModel.find({});
+    return users.map(user => {
+      return {
+        username: user.user,
+        email: user.email,
+        phone: user.phone
+      };
+    });
   } catch (error) {
     console.log(error);
     return undefined;
@@ -65,18 +62,18 @@ async function validateUser(cred){
     } 
 
     const user = await findUserByName(cred.user);
-  
-    console.log(user);
 
     if(user.length === 0){
       return undefined;
     } else {
-      if(cred.pass === user[0].password){
+      const checkPass = await bcrypt.compare(cred.pass, user[0].password);
+      
+      if (checkPass){
         return user[0];
+      } else {
+        return undefined;
       }
-    }
-
-    return undefined;    
+    } 
   } catch (error) {
     console.log(error);
     return undefined;
@@ -88,16 +85,13 @@ async function findUserByName(name) {
   return await userModel.find({ user: name });
 }
 
-async function findUserByJob(job) {
-  return await userModel.find({ job: job });
-}
 
 function generateAccessToken(username){
   return jwt.sign(username, token, {expiresIn: '86400s'});
 }
 
 
-
+exports.getAllUserDetails = getAllUserDetails;
 exports.addUser = addUser;
 exports.validateUser = validateUser;
 exports.generateAccessToken = generateAccessToken;

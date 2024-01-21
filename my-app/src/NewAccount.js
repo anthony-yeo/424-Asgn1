@@ -9,16 +9,40 @@ export const NewAccount = () => {
     const [username, setUsername] = useState('');
     const [password1, setPassword1] = useState('');
     const [password2, setPassword2] = useState('');
+    const [phone, setPhone] = useState('');
+    const [email, setEmail] = useState('');
 
     const navigate = useNavigate();
 
     const handleNewAccount = async() => {
         try {
+
+            if (!username.trim() || !password1.trim() || !password2.trim() || !phone.trim() || !email.trim()) {
+                alert('Please fill out all fields.');
+                return;
+            }
+
+            const phoneRegex = /^[0-9]{10}$/;
+            if (!phoneRegex.test(phone)) {
+                alert('Please enter a valid phone number.');
+                return;
+            }
+
+            const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+            if (!emailRegex.test(email)) {
+                alert('Please enter a valid email address.');
+                return;
+            }
+
+            
+
             const response = await axios.post('https://localhost:8000/new',
                 {
                     user: username, 
                     pass1: password1,
-                    pass2: password2
+                    pass2: password2,
+                    phone: phone,
+                    email: email
                 });
 
             console.log(response.status);
@@ -58,6 +82,16 @@ export const NewAccount = () => {
             <div className='form-group'>
                 <label htmlFor='password2'>Confirm Password</label>
                 <input type='text' id='password2' value={password2} onChange={(e) => setPassword2(e.target.value)}/>
+            </div>
+
+            <div className='form-group'>
+                <label htmlFor='phone'>Phone Number</label>
+                <input type='text' id='phone' value={phone} onChange={(e) => setPhone(e.target.value)}/>
+            </div>
+
+            <div className='form-group'>
+                <label htmlFor='email'>Email</label>
+                <input type='text' id='email' value={email} onChange={(e) => setEmail(e.target.value)}/>
             </div>
 
             <button type='button' onClick={handleNewAccount}>
