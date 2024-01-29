@@ -33,7 +33,7 @@ export const NewAccount = () => {
                 alert("Password not strong enough");
             } else if (error.response && error.response.status === 422){
                 alert("Passwords don't match");
-            } else if (error.response && error.response.status == 409) {
+            } else if (error.response && error.response.status === 409) {
                 alert("Username in use")
             }else {
                 alert("Something went wrong");
