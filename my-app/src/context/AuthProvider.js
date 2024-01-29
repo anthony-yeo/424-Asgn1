@@ -1,5 +1,5 @@
 import { createContext, useContext, useState } from "react";
-import { fakeAuth } from "../utils/FakeAuth";
+// import { fakeAuth } from "../utils/FakeAuth";
 import { useNavigate } from "react-router-dom";
 
 const AuthContext = createContext({});
