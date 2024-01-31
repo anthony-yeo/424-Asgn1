@@ -22,7 +22,7 @@ export const Home = () => {
 
     const handleSignIn = async() => {
         try {
-            const response = await axios.post('https://lively-mushroom-0ca21ac1e.4.azurestaticapps.net/login',
+            const response = await axios.post('https://csc-424-cloud.azurewebsites.net/login',
                 {user: username, pass: password});
             
 

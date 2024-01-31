@@ -14,7 +14,7 @@ export const NewAccount = () => {
 
     const handleNewAccount = async() => {
         try {
-            const response = await axios.post('https://lively-mushroom-0ca21ac1e.4.azurestaticapps.net/new',
+            const response = await axios.post('https://csc-424-cloud.azurewebsites.net/new',
                 {
                     user: username, 
                     pass1: password1,
