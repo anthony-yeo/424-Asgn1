@@ -1,0 +1,19 @@
+# To get started with Dependabot version updates, you'll need to specify which
+# package ecosystems to update and where the package manifests are located.
+# Please see the documentation for all configuration options:
+# https://docs.github.com/code-security/dependabot/dependabot-version-updates/configuration-options-for-the-dependabot.yml-file
+
+version: 2
+updates:
+  # Configuration for directory 1
+  - package-ecosystem: "npm" # type of package ecosystem
+    directory: "/my-app" # path to the directory containing the package manifest
+    schedule:
+      interval: "weekly" # how often to check for updates
+
+  # Configuration for directory 2
+  - package-ecosystem: "npm" # type of package ecosystem
+    directory: "/backend" # path to the directory containing the package manifest
+    schedule:
+      interval: "weekly" # how often to check for updates
+
