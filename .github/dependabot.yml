@@ -10,10 +10,12 @@ updates:
     directory: "/my-app" # path to the directory containing the package manifest
     schedule:
       interval: "weekly" # how often to check for updates
+    target-branch: "vuln-fix"
 
   # Configuration for directory 2
   - package-ecosystem: "npm" # type of package ecosystem
     directory: "/backend" # path to the directory containing the package manifest
     schedule:
       interval: "weekly" # how often to check for updates
+    target-branch: "vuln-fix"
 
