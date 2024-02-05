@@ -82,7 +82,11 @@ async function validateUser(cred){
 
 async function findUserByName(name) {
   console.log(name);
-  return await userModel.find({ user: name });
+  return await userModel.findAll({
+    where: {
+      username: name
+    }
+  });
 }
 
 
