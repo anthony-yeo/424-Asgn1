@@ -8,6 +8,7 @@ const express = require('express');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const helmet = require('helmet');
+const rateLimit = require('express-rate-limit');
 
 const app = express();
 const port = 8000;
@@ -15,6 +16,13 @@ const port = 8000;
 const { validPass } = require('./utils/services');
 const userServices = require('./models/user-services');
 const User = require('./models/user');
+
+const limiter = rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: 100,
+    standardHeaders: true,
+    legacyHeaders: false,
+});
 
 const TOKEN_SECRET = process.env.JWT_SECRET;
 const saltRounds = 10;
@@ -93,7 +101,7 @@ app.post('/login', async (req, res) => {
     
 });
 
-app.get('/checkauth', authenticateToken, (req, res) => {
+app.get('/checkauth', authenticateToken, limiter, (req, res) => {
     // If this point is reached, token is authenticated
     return res.status(200).send("Authenticated");
 });

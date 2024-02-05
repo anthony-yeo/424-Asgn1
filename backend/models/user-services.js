@@ -63,6 +63,8 @@ async function validateUser(cred){
 
     const user = await findUserByName(cred.user);
 
+    console.log("HERE");
+
     if(user.length === 0){
       return undefined;
     } else {
@@ -82,11 +84,7 @@ async function validateUser(cred){
 
 async function findUserByName(name) {
   console.log(name);
-  return await userModel.findAll({
-    where: {
-      username: name
-    }
-  });
+  return await userModel.find({ user: name });
 }
 
 
