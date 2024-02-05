@@ -41,5 +41,8 @@
   },
   "devDependencies": {
     "@cyclonedx/bom": "^4.0.3"
+  },
+  "overrides": {
+    "nth-check": "^2.1.1"
   }
 }
