@@ -43,6 +43,7 @@
     "@cyclonedx/bom": "^4.0.3"
   },
   "overrides": {
-    "nth-check": "^2.1.1"
+    "nth-check": "^2.1.1",
+    "postcss": "8.4.31"
   }
 }
