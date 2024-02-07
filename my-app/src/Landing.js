@@ -37,6 +37,11 @@ export const Landing = () => {
     );
   });
 
+const queryParameters = new URLSearchParams(window.location.search);
+const google_token = queryParameters.get("token");
+
+console.log(google_token);
+
   return (
     <>
       <h2>Landing (Protected)</h2>

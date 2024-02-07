@@ -16,6 +16,8 @@ const port = 8000;
 const { validPass } = require('./utils/services');
 const userServices = require('./models/user-services');
 const User = require('./models/user');
+const authRouter = require("./routes/oath");
+const requestRouter = require("./routes/request");
 
 var limiter = rateLimit({
     windowMs: 15 * 60 * 1000, // 15 minutes
@@ -35,6 +37,8 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(helmet());
 app.use(limiter);
+app.use("/oath", authRouter);
+app.use("/requestf", requestRouter);
 
 https
   .createServer(
