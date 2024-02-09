@@ -46,7 +46,8 @@ router.get("/", async function (req, res, next) {
     token = generateAccessToken(user_data.name);
 
     console.log(token);
-    res.redirect(303, `https://localhost:3000/token=${token}`);
+    res.cookie('token', token, { httpOnly: true, secure: true });
+    res.redirect(303, `https://localhost:3000/landing?token=${token}`);
 
     } catch (err) {
            console.log("Error with signin with Google", err);

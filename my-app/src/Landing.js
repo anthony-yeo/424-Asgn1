@@ -3,6 +3,15 @@ import axios from 'axios';
 
 import './Landing.css';
 
+const queryParameters = new URLSearchParams(window.location.search);
+const google_token = queryParameters.get("token");
+
+if (google_token) {
+    localStorage.setItem('TOKEN_KEY', google_token);
+    // Possibly redirect to the main content of the landing page here
+}
+
+
 export const Landing = () => {
 
   const [users, setUsers] = useState([]);
@@ -36,11 +45,6 @@ export const Landing = () => {
       user.phone.toLowerCase().includes(filter)
     );
   });
-
-const queryParameters = new URLSearchParams(window.location.search);
-const google_token = queryParameters.get("token");
-
-console.log(google_token);
 
   return (
     <>

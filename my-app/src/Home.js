@@ -102,13 +102,14 @@ export const Home = () => {
                 Sign In
             </button>
 
-            <button type="button" onClick={()=> auth()}>
-                <img src={googleButton} alt="google sign in"/>
-            </button>
-
             <button type="button" onClick={handleNewAccount} style={{ marginLeft: '10px' }}>
                 Create New Account
             </button>
+
+            <img src={googleButton} 
+            alt="google sign in"
+            onClick={() => auth()}
+            style={{cursor: 'pointer', display: 'block', marginTop: '10px'}}/>
 
         </>
 
