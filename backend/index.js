@@ -38,7 +38,7 @@ app.use(cookieParser());
 app.use(helmet());
 app.use(limiter);
 app.use("/oath", authRouter);
-app.use("/requestf", requestRouter);
+app.use("/request", requestRouter);
 
 https
   .createServer(

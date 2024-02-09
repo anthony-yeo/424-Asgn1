@@ -1,7 +1,22 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "./context/AuthProvider";
 import { useNavigate } from "react-router-dom";
+import googleButton from './assets/signin-assets/signin-assets/Web/png@1x/light/web_light_rd_ctn@1x.png'
+
 import axios from 'axios';
+
+
+function navigate(url){
+    window.location.href = url;
+}
+
+async function auth(){
+    const response = await fetch('https://127.0.0.1:8000/request', {method:'post'});
+
+    console.log(response);
+    const data = await response.json();
+    navigate(data.url);
+}
 
 export const Home = () => {
 
@@ -85,6 +100,10 @@ export const Home = () => {
 
             <button type="button" onClick={handleSignIn}>
                 Sign In
+            </button>
+
+            <button type="button" onClick={()=> auth()}>
+                <img src={googleButton} alt="google sign in"/>
             </button>
 
             <button type="button" onClick={handleNewAccount} style={{ marginLeft: '10px' }}>

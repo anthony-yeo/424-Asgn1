@@ -15,7 +15,8 @@ async function getUserData(access_token) {
     );
 
     const data = await response.json();
-    console.log("data", data);
+    // console.log("data", data);
+    return data
 }
 
 router.get("/", async function (req, res, next) {
@@ -39,7 +40,12 @@ router.get("/", async function (req, res, next) {
    // call your code to generate a new JWT from your backend, don't reuse Googles
 
    // token = generateJWT(user.appUser.userid);
-    token = generateAccessToken(user.appUser.userid);
+    console.log("HERE!!!!!")
+
+    let user_data = await getUserData(user.access_token);
+    token = generateAccessToken(user_data.name);
+
+    console.log(token);
     res.redirect(303, `https://localhost:3000/token=${token}`);
 
     } catch (err) {

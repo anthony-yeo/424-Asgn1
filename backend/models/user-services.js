@@ -89,7 +89,7 @@ async function findUserByName(name) {
 
 
 function generateAccessToken(username){
-  return jwt.sign(username, token, {expiresIn: '86400s'});
+  return jwt.sign({username: username}, token, {expiresIn: '86400s'});
 }
 
 
